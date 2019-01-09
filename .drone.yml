@@ -1,0 +1,29 @@
+kind: pipeline
+name: default
+
+steps:
+- name: cf-deploy
+  image: governmentpaas/cf-cli
+  environment:
+    GPAAS_APP_NAME: govuk-prototype-kit
+    GPAAS_USER:
+      from_secret: gpaas_user
+    GPAAS_PASS:
+      from_secret: gpaas_pass
+    GPAAS_ORG: gds-tech-ops
+    GPAAS_SPACE: sandbox
+    GPAAS_API: api.cloud.service.gov.uk
+  commands:
+    # set api endpoint and login
+    - 'cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"'
+    # set the target
+    - 'cf target -o $GPAAS_ORG -s $GPAAS_SPACE'
+    # push the apps
+    - 'rm Procfile'
+    - 'cf push $GPAAS_APP_NAME'
+
+---
+kind: secret
+data:
+  gpaas_user: IAH4JrAepVFaxsuxGvWp6X6JgVE4s4oxfZR-F_HxX8shbHznKYaP8jHSpGBaVI6yrb1ZcLhEW_vWV_u1bCvIa4yPRkv88Ju5HltYknO8M9XJ
+  gpaas_pass: zxnEuvEfpe_9wN6kbWPKSc_Sis3ZbAEo41NUkrVYx64zulzK-6R3GALSEgUesnEizggYd8Yrgu7zgB220hpd

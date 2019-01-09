@@ -1,0 +1,10 @@
+---
+applications:
+- name: $GPAAS_APP_NAME
+  command: node start.js
+  env:
+    NODE_ENV: development
+    USE_AUTH: false
+  memory: 1G
+  instances: 1
+  buildpack: nodejs_buildpack
