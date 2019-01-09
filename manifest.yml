@@ -6,4 +6,5 @@ applications:
     USE_AUTH: false
   memory: 1G
   instances: 1
-  buildpacks: nodejs_buildpack
+  buildpacks:
+    - nodejs_buildpack
