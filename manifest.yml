@@ -4,6 +4,7 @@ applications:
   command: node start.js
   env:
     USE_AUTH: false
+    PROMO_MODE: true
   memory: 1G
   instances: 1
   buildpacks:
