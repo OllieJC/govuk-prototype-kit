@@ -42,8 +42,6 @@ steps:
     # update the system and add bash and curl
     - apk update
     - apk add bash curl
-    # test
-    - 'ls -lah'
     # get the route from the green-deploy.txt file outputted in the prev step
     #- 'URL=$(grep "^routes:" green-deploy.txt | cut -d ":" -f2 | tr -d " ")'
     - URL=$GPAAS_APP_NAME-temp.$GPAAS_DOMAIN
@@ -73,6 +71,12 @@ steps:
     # map the temp app to the main app and domain, so..
     # app-temp.domain point to app.domain
     - 'cf map-route $GPAAS_APP_NAME-temp $GPAAS_DOMAIN -n $GPAAS_APP_NAME'
+    # unmap route from old / blue environment
+    - 'cf unmap-route $GPAAS_APP_NAME $GPAAS_DOMAIN -n $GPAAS_APP_NAME'
+    # delete the old / blue environment
+    - 'cf delete $GPAAS_APP_NAME -r -f'
+    # rename the temp app name back to desired app name
+    - 'cf rename $GPAAS_APP_NAME-temp $GPAAS_APP_NAME'
 
 ---
 kind: secret
