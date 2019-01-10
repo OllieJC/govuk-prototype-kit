@@ -25,13 +25,13 @@ steps:
     GPAAS_API: api.cloud.service.gov.uk
   commands:
     # set api endpoint and login
-    - cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"
+    - 'cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"''
     # set the target
-    - cf target -o $GPAAS_ORG -s $GPAAS_SPACE
+    - 'cf target -o $GPAAS_ORG -s $GPAAS_SPACE'
     # push the apps
     - rm Procfile
     - 'echo {\"collectUsageData\":false} > usage-data-config.json'
-    - cf push $GPAAS_APP_NAME-temp | tee green-deploy.txt
+    - 'cf push $GPAAS_APP_NAME-temp | tee green-deploy.txt'
 - name: green-check
   image: alpine
   environment:
@@ -41,7 +41,7 @@ steps:
     - apk update
     - apk add bash curl
     # test
-    - ls -lah
+    - 'ls -lah'
     # get the route from the green-deploy.txt file outputted in the prev step
     - 'URL=$(grep '^routes:' green-deploy.txt | cut -d ':' -f2 | tr -d ' ')'
     - 'echo URL: $URL'
@@ -63,11 +63,11 @@ steps:
     GPAAS_API: api.cloud.service.gov.uk
   commands:
     # set api endpoint and login
-    - cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"
+    - 'cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"''
     # set the target
-    - cf target -o $GPAAS_ORG -s $GPAAS_SPACE
+    - 'cf target -o $GPAAS_ORG -s $GPAAS_SPACE'
     # !! need to make this variable
-    - cf map-route $GPAAS_APP_NAME-temp digitalapps.digital -n $GPAAS_APP_NAME
+    - 'cf map-route $GPAAS_APP_NAME-temp digitalapps.digital -n $GPAAS_APP_NAME'
 
 ---
 kind: secret
