@@ -36,5 +36,5 @@ steps:
 ---
 kind: secret
 data:
-  gpaas_user: IAH4JrAepVFaxsuxGvWp6X6JgVE4s4oxfZR-F_HxX8shbHznKYaP8jHSpGBaVI6yrb1ZcLhEW_vWV_u1bCvIa4yPRkv88Ju5HltYknO8M9XJ
-  gpaas_pass: zxnEuvEfpe_9wN6kbWPKSc_Sis3ZbAEo41NUkrVYx64zulzK-6R3GALSEgUesnEizggYd8Yrgu7zgB220hpd
+  gpaas_user: i--4jbVi-skBP6JyLd1mklQXq4IL62lIHKIFz8QDezMV0xymPavtphOqHgSB4-HU0XyAz7s6W9SgPhQSoWZef3vj3962ZvnNdnLXIDvuOAR-
+  gpaas_pass: xL4cd9NsPaaINa4oof_Yp7KGowkyflFwEg_Q_dhX7nnzXODb-LC3kCPGb3ZbAdyr0lkh16Mu3JuV2bxMHA2N
