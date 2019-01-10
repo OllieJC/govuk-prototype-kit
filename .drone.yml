@@ -36,6 +36,8 @@ steps:
   image: alpine
   environment:
     EXPECTED_STATUS_CODE: 200
+    GPAAS_APP_NAME: govuk-prototype-kit
+    GPAAS_DOMAIN: cloudapps.digital
   commands:
     # update the system and add bash and curl
     - apk update
