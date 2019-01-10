@@ -5,14 +5,14 @@ steps:
 - name: lint
   image: node
   commands:
-    - 'npm install'
-    - 'npm run lint'
+    - npm install
+    - npm run lint
 - name: test
   image: node
   commands:
-    - 'npm install'
-    - 'npm test'
-- name: cf-deploy
+    - npm install
+    - npm test
+- name: cf-deploy-green
   image: governmentpaas/cf-cli
   environment:
     GPAAS_APP_NAME: govuk-prototype-kit
@@ -25,13 +25,49 @@ steps:
     GPAAS_API: api.cloud.service.gov.uk
   commands:
     # set api endpoint and login
-    - 'cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"'
+    - cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"
     # set the target
-    - 'cf target -o $GPAAS_ORG -s $GPAAS_SPACE'
+    - cf target -o $GPAAS_ORG -s $GPAAS_SPACE
     # push the apps
-    - 'rm Procfile'
+    - rm Procfile
     - 'echo {\"collectUsageData\":false} > usage-data-config.json'
-    - 'cf push $GPAAS_APP_NAME'
+    - cf push $GPAAS_APP_NAME-temp | tee green-deploy.txt
+- name: green-check
+  image: alpine
+  environment:
+    EXPECTED_STATUS_CODE: 200
+  commands:
+    # update the system and add bash and curl
+    - apk update
+    - apk add bash curl
+    # test
+    - ls -lah
+    # get the route from the green-deploy.txt file outputted in the prev step
+    - URL=$(grep '^routes:' green-deploy.txt | cut -d ':' -f2 | tr -d ' ')
+    - 'echo URL: $URL'
+    # get the status code
+    - STATUS_CODE=$(curl -ILs $URL | grep HTTP/ | tail -1 | cut -d ' ' -f2)
+    - 'echo STATUS_CODE: $STATUS_CODE'
+    # compare the status codes
+    - [ "$STATUS_CODE" == "$EXPECTED_STATUS_CODE" ] && exit 0 || exit 1
+- name: cf-map-blue
+  image: governmentpaas/cf-cli
+  environment:
+    GPAAS_APP_NAME: govuk-prototype-kit
+    GPAAS_USER:
+      from_secret: gpaas_user
+    GPAAS_PASS:
+      from_secret: gpaas_pass
+    GPAAS_ORG: gds-tech-ops
+    GPAAS_SPACE: sandbox
+    GPAAS_API: api.cloud.service.gov.uk
+  commands:
+    # set api endpoint and login
+    - cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"
+    # set the target
+    - cf target -o $GPAAS_ORG -s $GPAAS_SPACE
+    # !! need to make this variable
+    - cf map-route $GPAAS_APP_NAME-temp digitalapps.digital -n $GPAAS_APP_NAME
 
 ---
 kind: secret
