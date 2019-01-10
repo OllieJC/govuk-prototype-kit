@@ -63,7 +63,7 @@ steps:
     GPAAS_API: api.cloud.service.gov.uk
   commands:
     # set api endpoint and login
-    - 'cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"''
+    - 'cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"'
     # set the target
     - 'cf target -o $GPAAS_ORG -s $GPAAS_SPACE'
     # !! need to make this variable
