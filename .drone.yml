@@ -43,13 +43,13 @@ steps:
     # test
     - ls -lah
     # get the route from the green-deploy.txt file outputted in the prev step
-    - URL=$(grep '^routes:' green-deploy.txt | cut -d ':' -f2 | tr -d ' ')
+    - 'URL=$(grep '^routes:' green-deploy.txt | cut -d ':' -f2 | tr -d ' ')'
     - 'echo URL: $URL'
     # get the status code
-    - STATUS_CODE=$(curl -ILs $URL | grep HTTP/ | tail -1 | cut -d ' ' -f2)
+    - 'STATUS_CODE=$(curl -ILs $URL | grep HTTP/ | tail -1 | cut -d ' ' -f2)'
     - 'echo STATUS_CODE: $STATUS_CODE'
     # compare the status codes
-    - [ "$STATUS_CODE" == "$EXPECTED_STATUS_CODE" ] && exit 0 || exit 1
+    - '[ "$STATUS_CODE" == "$EXPECTED_STATUS_CODE" ] && exit 0 || exit 1'
 - name: cf-map-blue
   image: governmentpaas/cf-cli
   environment:
