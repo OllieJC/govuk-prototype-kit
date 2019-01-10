@@ -2,23 +2,44 @@ kind: pipeline
 name: default
 
 steps:
+- name: setup-shared-env_vars
+  image: alpine
+  commands:
+    # update the system and add bash and curl
+    - apk update
+    - apk add bash
+    # hacky way of keeping all env vars in one place
+    - 'echo "export GPAAS_APP_NAME=$GPAAS_APP_NAME" >> .env_vars'
+    - 'echo "export GPAAS_ORG=$GPAAS_ORG" >> .env_vars'
+    - 'echo "export GPAAS_SPACE=$GPAAS_SPACE" >> .env_vars'
+    - 'echo "export GPAAS_API=$GPAAS_API" >> .env_vars'
+    - 'echo "export EXPECTED_STATUS_CODE=$EXPECTED_STATUS_CODE" >> .env_vars'
+    - 'echo "export GPAAS_DOMAIN=$GPAAS_DOMAIN" >> .env_vars'
+    - 'echo "export GPAAS_USER=$GPAAS_USER" >> .env_vars'
+    - 'echo "export GPAAS_PASS=$GPAAS_PASS" >> .env_vars'
+  environment:
+    GPAAS_APP_NAME: govuk-prototype-kit
+    GPAAS_ORG: gds-tech-ops
+    GPAAS_SPACE: sandbox
+    GPAAS_API: api.cloud.service.gov.uk
+    EXPECTED_STATUS_CODE: 200
+    GPAAS_DOMAIN: cloudapps.digital
+    GPAAS_USER:
+      from_secret: gpaas_user
+    GPAAS_PASS:
+      from_secret: gpaas_pass
+
 - name: test
   image: node
   commands:
     - npm install
     - npm test
+
 - name: cf-deploy-green
   image: governmentpaas/cf-cli
-  environment:
-    GPAAS_APP_NAME: govuk-prototype-kit
-    GPAAS_USER:
-      from_secret: gpaas_user
-    GPAAS_PASS:
-      from_secret: gpaas_pass
-    GPAAS_ORG: gds-tech-ops
-    GPAAS_SPACE: sandbox
-    GPAAS_API: api.cloud.service.gov.uk
   commands:
+    # shared .env_vars file from first step
+    - source .env_vars
     # set api endpoint and login
     - 'cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"'
     # set the target
@@ -27,13 +48,12 @@ steps:
     - rm Procfile
     - 'echo {\"collectUsageData\":false} > usage-data-config.json'
     - cf push $GPAAS_APP_NAME-temp
+
 - name: green-check
   image: alpine
-  environment:
-    EXPECTED_STATUS_CODE: 200
-    GPAAS_APP_NAME: govuk-prototype-kit
-    GPAAS_DOMAIN: cloudapps.digital
   commands:
+    # shared .env_vars file from first step
+    - source .env_vars
     # update the system and add bash and curl
     - apk update
     - apk add bash curl
@@ -46,19 +66,12 @@ steps:
     - 'echo STATUS_CODE: $STATUS_CODE'
     # compare the status codes
     - '[ "$STATUS_CODE" == "$EXPECTED_STATUS_CODE" ] && exit 0 || exit 1'
+
 - name: cf-map-blue
   image: governmentpaas/cf-cli
-  environment:
-    GPAAS_APP_NAME: govuk-prototype-kit
-    GPAAS_USER:
-      from_secret: gpaas_user
-    GPAAS_PASS:
-      from_secret: gpaas_pass
-    GPAAS_ORG: gds-tech-ops
-    GPAAS_SPACE: sandbox
-    GPAAS_API: api.cloud.service.gov.uk
-    GPAAS_DOMAIN: cloudapps.digital
   commands:
+    # shared .env_vars file from first step
+    - source .env_vars
     # set api endpoint and login
     - 'cf login -a $GPAAS_API -u $GPAAS_USER -p "$GPAAS_PASS"'
     # set the target
