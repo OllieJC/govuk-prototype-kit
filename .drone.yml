@@ -6,7 +6,7 @@ steps:
   image: alpine
   commands:
     # exit if GPAAS_USER is blank (not set)
-    - '["$GPAAS_USER" == ""] && echo "GPAAS_USER not set!" && exit 1 || exit 0'
+    - '[ "$GPAAS_USER" == "" ] && echo "GPAAS_USER not set" && exit 1 || exit 0'
     # update the system and add bash and curl
     - apk update
     - apk add bash
