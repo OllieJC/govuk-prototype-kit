@@ -5,6 +5,9 @@ steps:
 - name: setup-shared-env_vars
   image: alpine
   commands:
+    # update the system and add bash and curl
+    - apk update
+    - apk add bash
     # exit if GPAAS_USER is blank (not set)
     - '[ "$GPAAS_USER" == "" ] && echo "GPAAS_USER not set" && exit 1 || exit 0'
     # hacky way of keeping all env vars in one place
