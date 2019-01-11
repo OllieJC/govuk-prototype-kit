@@ -7,9 +7,6 @@ steps:
   commands:
     # exit if GPAAS_USER is blank (not set)
     - '[ "$GPAAS_USER" == "" ] && echo "GPAAS_USER not set" && exit 1 || exit 0'
-    # update the system and add bash and curl
-    - apk update
-    - apk add bash
     # hacky way of keeping all env vars in one place
     - 'echo "export GPAAS_APP_NAME=$GPAAS_APP_NAME" >> .env_vars'
     - 'echo "export GPAAS_ORG=$GPAAS_ORG" >> .env_vars'
@@ -24,12 +21,12 @@ steps:
     GPAAS_ORG: gds-tech-ops
     GPAAS_SPACE: sandbox
     GPAAS_API: api.cloud.service.gov.uk
-    EXPECTED_STATUS_CODE: 200
     GPAAS_DOMAIN: cloudapps.digital
     GPAAS_USER:
       from_secret: gpaas_user
     GPAAS_PASS:
       from_secret: gpaas_pass
+    EXPECTED_STATUS_CODE: 200
 
 - name: test
   image: node
