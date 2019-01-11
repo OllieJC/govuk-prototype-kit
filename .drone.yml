@@ -85,9 +85,5 @@ steps:
     - 'cf delete $GPAAS_APP_NAME -r -f'
     # rename the temp app name back to desired app name
     - 'cf rename $GPAAS_APP_NAME-temp $GPAAS_APP_NAME'
-
----
-kind: secret
-data:
-  gpaas_user: i--4jbVi-skBP6JyLd1mklQXq4IL62lIHKIFz8QDezMV0xymPavtphOqHgSB4-HU0XyAz7s6W9SgPhQSoWZef3vj3962ZvnNdnLXIDvuOAR-
-  gpaas_pass: xL4cd9NsPaaINa4oof_Yp7KGowkyflFwEg_Q_dhX7nnzXODb-LC3kCPGb3ZbAdyr0lkh16Mu3JuV2bxMHA2N
+    # unmap route from old / blue environment
+    - 'cf unmap-route $GPAAS_APP_NAME $GPAAS_DOMAIN -n $GPAAS_APP_NAME-temp'
