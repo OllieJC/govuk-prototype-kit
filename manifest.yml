@@ -1,7 +1,11 @@
 ---
 applications:
 - name: govuk-prototype-kit
-  command: rm .env_vars && node start.js
+  command: >
+    rm Procfile &&
+    echo {\"collectUsageData\":false} > usage-data-config.json &&
+    rm .env_vars &&
+    node start.js
   env:
     USE_AUTH: false
     PROMO_MODE: true

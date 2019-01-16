@@ -47,8 +47,6 @@ steps:
     # set the target
     - 'cf target -o $GPAAS_ORG -s $GPAAS_SPACE'
     # push the apps
-    - rm Procfile
-    - 'echo {\"collectUsageData\":false} > usage-data-config.json'
     - cf push $GPAAS_APP_NAME-temp
 
 - name: green-check
