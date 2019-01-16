@@ -2,9 +2,9 @@
 applications:
 - name: govuk-prototype-kit
   command: >
-    rm Procfile &&
+    if [ -f Procfile ]; then rm Procfile; fi &&
+    if [ -f .env_vars ]; then rm .env_vars; fi &&
     echo {\"collectUsageData\":false} > usage-data-config.json &&
-    rm .env_vars &&
     node start.js
   env:
     USE_AUTH: false
